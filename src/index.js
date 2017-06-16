@@ -153,5 +153,5 @@ app.post('/connection', (req, res) => {
 })
 
 //now we start the server. Yei.
-app.listen(process.env['PORT'] || 3000)
-console.log(`server listening at port: ${process.env['PORT'] || 3000}`)
+app.listen(process.PORT || 8080)
+console.log(`server listening at port: ${process.env['PORT']}`)

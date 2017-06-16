@@ -23,7 +23,7 @@
             <entry file="file://$PROJECT_DIR$/src/index.js">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="771">
-                  <caret line="156" column="68" lean-forward="false" selection-start-line="156" selection-start-column="68" selection-end-line="156" selection-end-column="68" />
+                  <caret line="156" column="60" lean-forward="false" selection-start-line="156" selection-start-column="60" selection-end-line="156" selection-end-column="60" />
                   <folding>
                     <element signature="e#0#30#0" expanded="true" />
                   </folding>
@@ -71,8 +71,8 @@
           <file leaf-file-name="movieset.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/movieset.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="210">
-                  <caret line="14" column="10" lean-forward="false" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="10" />
+                <state relative-caret-position="120">
+                  <caret line="8" column="38" lean-forward="false" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="38" />
                   <folding>
                     <element signature="e#0#30#0" expanded="true" />
                   </folding>
@@ -124,6 +124,8 @@
       <find>babel</find>
       <find>pic</find>
       <find>confi</find>
+      <find>port</find>
+      <find>.port</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -622,12 +624,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1497625740806</updated>
-      <workItem from="1497625743250" duration="5792000" />
+      <workItem from="1497625743250" duration="6106000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5792000" />
+    <option name="totallyTimeSpent" value="6106000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1023" extended-state="0" />
@@ -739,8 +741,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/movieset.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="10" lean-forward="false" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="10" />
+        <state relative-caret-position="120">
+          <caret line="8" column="38" lean-forward="false" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="38" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
@@ -750,7 +752,7 @@
     <entry file="file://$PROJECT_DIR$/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="771">
-          <caret line="156" column="68" lean-forward="false" selection-start-line="156" selection-start-column="68" selection-end-line="156" selection-end-column="68" />
+          <caret line="156" column="60" lean-forward="false" selection-start-line="156" selection-start-column="60" selection-end-line="156" selection-end-column="60" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
