@@ -209,5 +209,5 @@ app.post(
 
   //now we start the server. Yei.
 )
-app.listen(undefined || 3000)
-console.log('server listening at port: ' + (undefined || 3000))
+app.listen(process.env['PORT'] || 8080)
+console.log('server listening at port: ' + process.env['PORT'])

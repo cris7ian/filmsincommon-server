@@ -37,7 +37,7 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj }
 }
 
-var mdb = require('moviedb')('6931de2906a99776822e6352bddb2475')
+var mdb = require('moviedb')(process.env['MDB_API_KEY'])
 
 var poster_url = ''
 var poster_url_original = ''
