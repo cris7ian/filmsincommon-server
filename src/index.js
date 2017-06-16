@@ -41,13 +41,13 @@ app.use((req, res, next) => {
 app.use(express.bodyParser())
 
 // POST name: the person to search for.
-app.post('/person', (req, res) => {
-  if (!req.body.name) {
+app.get('/person/:name', (req, res) => {
+  const name = req.params.name
+  if (!name) {
     //we throw an error if there are no params.
     res.json({ status: 0, name: 'error' })
     return
   }
-  const name = req.body.name
   //we use 'ngram' because we'll want to use it as an autocomplete method (see API).
   mdb.searchPerson(
     { query: name, search_type: 'ngram', include_adult: true },
@@ -73,13 +73,13 @@ app.post('/person', (req, res) => {
   )
 })
 
-app.post('/revenue', (req, res) => {
-  if (!req.body.id) {
+app.get('/revenue/:id', (req, res) => {
+  const id = req.params.id
+  if (!id) {
     //we throw an error if there are no params.
     res.json({ status: 0, name: 'error' })
     return
   }
-  const id = req.body.id
 
   const getRevenue = (credit, callback) => {
     mdb.movieInfo({ id: credit.id }, (err, result) => {
@@ -90,7 +90,7 @@ app.post('/revenue', (req, res) => {
 
   mdb.personCredits({ id: id, include_adult: true }, (err2, credits) => {
     if (err2 || !credits.cast) {
-      res.json({ status: 0, name: 'error' })
+      res.json({ status: 0, name: 'error getting revenue' })
       return
     }
     async.map(credits.cast, getRevenue, (err, results) => {
@@ -101,27 +101,16 @@ app.post('/revenue', (req, res) => {
 })
 
 // POST names: an array with the people to query for.
-app.post('/connection', (req, res) => {
+app.get('/connection/:name1/:name2', (req, res) => {
   let movies = {} //here we'll store all  the movies from each actor.
-  let useBigPosters = false //A flag that says whether we want big posters or not.
   res.type('text/plain') // set content-type
-  if (!req.body.names) {
+  if (!req.params.name1 || !req.params.name2) {
     //we throw a mistake if there are no params.
     res.json({ status: 0, name: 'error' })
     return
   }
 
-  if (req.body.useBigPosters) {
-    useBigPosters = true
-  }
-  let names = []
-  try {
-    //we eval this params.
-    names = eval(req.body.names)
-  } catch (e) {
-    res.json({ status: 0, name: 'array' })
-    return
-  }
+  let names = [req.params.name1, req.params.name2]
 
   const limit = names.length //the amount of actors to ask for.
   let counter = 0 //to see when are we done fetching information.
@@ -145,7 +134,7 @@ app.post('/connection', (req, res) => {
           each(credits.cast, movie => movies[name].push(movie))
           each(credits.crew, movie => movies[name].push(movie))
           movies[name] = deleteDuplicates(movies[name])
-          if (++counter == limit) createResults(res, movies, useBigPosters)
+          if (++counter == limit) createResults(res, movies)
         })
       }
     )
@@ -153,5 +142,4 @@ app.post('/connection', (req, res) => {
 })
 
 //now we start the server. Yei.
-app.listen(process.env['PORT'] || 8080)
-console.log(`server listening at port: ${process.env['PORT']}`)
+app.listen(process.env['PORT'] || 3000)

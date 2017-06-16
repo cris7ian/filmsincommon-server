@@ -47,7 +47,7 @@ const intersect = (arr1, arr2) => {
   return intersect
 }
 
-export const createResults = (res, movies, useBigPosters) => {
+export const createResults = (res, movies, useBigPosters = true) => {
   let arr = null
   for (let actor in movies) {
     if (isNull(arr)) {
@@ -87,6 +87,7 @@ export const createResults = (res, movies, useBigPosters) => {
     answer += '\n'
   })
 
+  console.log(answer)
   //we now look for the imdb links in Google.
   res.json(responseJson)
 }
