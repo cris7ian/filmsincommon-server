@@ -1,0 +1,47 @@
+{
+  "name": "movienode",
+  "version": "0.9.0",
+  "description": "A service that matches the works of two different movie people.",
+  "main": "index.js",
+  "lint-staged": {
+    "*.js": [
+      "prettier --write --no-semi --single-quote",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "async": "0.2.9",
+    "dotenv": "^4.0.0",
+    "express": "3.x",
+    "lodash": "^4.17.4",
+    "moviedb": "~0.1.0",
+    "underscore": "~1.5.2",
+    "underscore.string": "~2.3.3"
+  },
+  "scripts": {
+    "precommit": "lint-staged",
+    "start": "nodemon src/index.js --exec babel-node",
+    "build": "babel src -d dist",
+    "serve": "node dist/index.js",
+    "postinstall": "npm run build"
+  },
+  "repository": "",
+  "keywords": [
+    "movie",
+    "actors",
+    "imdb"
+  ],
+  "author": "Cristian E. Caroli",
+  "license": "BSD",
+  "gitHead": "06518704dd02c7974c65015f46ba17f2b29c910d",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-inline-environment-variables": "^0.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "husky": "^0.13.3",
+    "lint-staged": "^3.4.1",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.3.1"
+  }
+}
