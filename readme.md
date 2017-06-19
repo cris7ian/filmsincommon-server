@@ -5,3 +5,12 @@
 - `npm build && npm serve` for production
 
 Remember to set your `MDB_API_KEY` in your environment variables.
+
+
+## todo
+
+- [ ] use promises.
+- [ ] write tests.
+- [ ] change status errors.
+- [ ] use timeouts to avoid api limits.
+- [ ] add cache.
