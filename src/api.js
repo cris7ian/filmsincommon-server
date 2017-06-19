@@ -2,7 +2,8 @@ import each from 'lodash/each'
 import reduce from 'lodash/reduce'
 import isEmpty from 'lodash/isEmpty'
 import sortBy from 'lodash/sortBy'
-import { createResults, deleteDuplicates } from './movieset'
+import uniqBy from 'lodash/uniqBy'
+import { createResults } from './movieset'
 import async from 'async'
 
 const MDB_API_KEY = '6931de2906a99776822e6352bddb2475'
@@ -21,13 +22,18 @@ export const getActorName = (req, res) => {
   const name = req.params.name
   if (!name) {
     //we throw an error if there are no params.
-    res.json({ status: 0, name: 'error' })
+    res.status(400).send({ error: 'Bad params!' })
     return
   }
   //we use 'ngram' because we'll want to use it as an autocomplete method (see API).
   mdb.searchPerson(
     { query: name, search_type: 'ngram', include_adult: true },
     (err1, personInfo) => {
+      if (err1) {
+        return res
+          .status(500)
+          .send({ error: 'Could not find person. API error' })
+      }
       if (isEmpty(personInfo.results)) {
         res.json([])
         return
@@ -53,65 +59,71 @@ export const getActorRevenue = (req, res) => {
   const id = req.params.id
   if (!id) {
     //we throw an error if there are no params.
-    res.json({ status: 0, name: 'error' })
+    res.status(500).send({ error: 'Need an id.' })
     return
   }
-
-  const getRevenue = (credit, callback) => {
-    mdb.movieInfo({ id: credit.id }, (err, result) => {
-      credit.revenue = result.revenue
-      callback(null, result.revenue)
-    })
-  }
-
-  mdb.personCredits({ id: id, include_adult: true }, (err2, credits) => {
-    if (err2 || !credits.cast) {
-      res.json({ status: 0, name: 'error getting revenue' })
-      return
+  try {
+    const getRevenue = (credit, callback) => {
+      mdb.movieInfo({ id: credit.id }, (err, result) => {
+        if (err) {
+          return callback(err, 0)
+        }
+        credit.revenue = result.revenue
+        callback(null, result.revenue)
+      })
     }
-    async.map(credits.cast, getRevenue, (err, results) => {
-      const revenue = reduce(results, (memo, num) => memo + num, 0)
-      res.json({ credits: credits, revenue: revenue })
+
+    mdb.personCredits({ id: id, include_adult: true }, (err2, credits) => {
+      if (err2 || !credits.cast) {
+        throw new Error('API LIMIT ERROR')
+      }
+      async.map(credits.cast, getRevenue, (err, results) => {
+        if (err) {
+          return res.status(500).send({ error: 'error collecting info.' })
+        }
+        const revenue = reduce(results, (memo, num) => memo + num, 0)
+        res.json({ revenue: revenue, credits: credits })
+      })
     })
-  })
+  } catch (error) {
+    return res.status(500).send({ error: 'API error getting revenue.' })
+  }
 }
 
-export const getConnection = (req, res) => {
-  let movies = {} //here we'll store all  the movies from each actor.
-  res.type('text/plain') // set content-type
-  if (!req.params.name1 || !req.params.name2) {
-    //we throw a mistake if there are no params.
-    res.json({ status: 0, name: 'error' })
-    return
-  }
-
-  let names = [req.params.name1, req.params.name2]
-
-  const limit = names.length //the amount of actors to ask for.
-  let counter = 0 //to see when are we done fetching information.
-  each(names, name => {
-    movies[name] = []
-    if (name == '') {
-      console.log('Empty name')
-      res.json({ status: 0, name: name })
-      return
-    }
-    mdb.searchPerson(
-      { query: name, include_adult: true },
-      (err1, personInfo) => {
-        if (isEmpty(personInfo.results) || personInfo.results[0] == null) {
-          console.log('Who is ' + name + '?')
-          res.json({ status: 0, name: name })
-          return
-        }
-        const id = personInfo.results[0].id
-        mdb.personCredits({ id: id, include_adult: true }, (err2, credits) => {
-          each(credits.cast, movie => movies[name].push(movie))
-          each(credits.crew, movie => movies[name].push(movie))
-          movies[name] = deleteDuplicates(movies[name])
-          if (++counter == limit) createResults(res, movies)
-        })
+const getCredits = id =>
+  new Promise((resolve, reject) => {
+    mdb.personCredits({ id, include_adult: true }, (err2, credits) => {
+      let movies = []
+      if (err2) {
+        return reject('error getting credits')
       }
-    )
+      each(credits.cast, movie => movies.push(movie))
+      each(credits.crew, movie => movies.push(movie))
+      return resolve(uniqBy(movies, 'title'))
+    })
   })
+
+export const getConnection = (req, res) => {
+  let movies = {}
+  if (!req.params.id1 || !req.params.id2) {
+    //we throw a mistake if there are no params.
+    return res.status(400).send({ error: 'Bad params! Need 2 ids.' })
+  }
+  const { id1, id2 } = req.params
+  getCredits(id1)
+    .then(moviesActor1 => {
+      movies[id1] = moviesActor1
+      return getCredits(id2)
+    })
+    .then(moviesActor2 => {
+      movies[id2] = moviesActor2
+      return movies
+    })
+    .then(movies => createResults(movies))
+    .then(response => res.json(response))
+    .catch(error =>
+      res.status(500).send({
+        error: "Can't get information for the connection. Server error."
+      })
+    )
 }

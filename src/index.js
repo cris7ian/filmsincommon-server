@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 app.get('/person/:name', getActorName)
 app.get('/revenue/:id', getActorRevenue)
-app.get('/connection/:name1/:name2', getConnection)
+app.get('/connection/:id1/:id2', getConnection)
 
 //now we start the server. Yei.
 app.listen(process.env['PORT'] || 3000)
