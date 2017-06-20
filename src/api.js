@@ -5,18 +5,11 @@ import sortBy from 'lodash/sortBy'
 import uniqBy from 'lodash/uniqBy'
 import { createResults } from './movieset'
 import async from 'async'
+import mdbAPI from 'moviedb'
 
-const MDB_API_KEY = '6931de2906a99776822e6352bddb2475'
-const mdb = require('moviedb')(MDB_API_KEY)
+const mdb = mdbAPI(process.env['MDB_API_KEY'])
 
-let face_url = ''
-mdb.configuration({}, (err, res) => {
-  console.log(
-    'Configuration from Movie DB loaded with profile pic sizes of ' +
-      res.images.logo_sizes[0]
-  )
-  face_url = res.images.base_url + res.images.logo_sizes[0]
-})
+const PROFILE_PICS_URL = 'http://image.tmdb.org/t/p/w45'
 
 export const getActorName = (req, res) => {
   const name = req.params.name
@@ -35,22 +28,19 @@ export const getActorName = (req, res) => {
           .send({ error: 'Could not find person. API error' })
       }
       if (isEmpty(personInfo.results)) {
-        res.json([])
-        return
+        return res.json([])
       }
       each(personInfo.results, (person, index) => {
         if (person.profile_path != null) {
           personInfo.results[index].profile_path =
-            face_url + person.profile_path
+            PROFILE_PICS_URL + person.profile_path
         }
       })
-
       //important to sort results by their popularity.
       personInfo.results = sortBy(personInfo.results, obj => {
         return obj.popularity
       }).reverse()
-
-      res.json(personInfo.results)
+      return res.json(personInfo.results)
     }
   )
 }
@@ -59,8 +49,7 @@ export const getActorRevenue = (req, res) => {
   const id = req.params.id
   if (!id) {
     //we throw an error if there are no params.
-    res.status(500).send({ error: 'Need an id.' })
-    return
+    return res.status(500).send({ error: 'Need an id.' })
   }
   try {
     const getRevenue = (credit, callback) => {
@@ -82,7 +71,7 @@ export const getActorRevenue = (req, res) => {
           return res.status(500).send({ error: 'error collecting info.' })
         }
         const revenue = reduce(results, (memo, num) => memo + num, 0)
-        res.json({ revenue: revenue, credits: credits })
+        return res.json({ revenue: revenue, credits: credits })
       })
     })
   } catch (error) {
@@ -92,19 +81,16 @@ export const getActorRevenue = (req, res) => {
 
 const getCredits = id =>
   new Promise((resolve, reject) => {
-    mdb.personCredits({ id, include_adult: true }, (err2, credits) => {
-      let movies = []
-      if (err2) {
+    mdb.personCredits({ id, include_adult: true }, (err, credits) => {
+      if (err) {
         return reject('error getting credits')
       }
-      each(credits.cast, movie => movies.push(movie))
-      each(credits.crew, movie => movies.push(movie))
-      return resolve(uniqBy(movies, 'title'))
+      return resolve(uniqBy([...credits.cast, ...credits.crew], 'title'))
     })
   })
 
 export const getConnection = (req, res) => {
-  let movies = {}
+  const movies = {}
   if (!req.params.id1 || !req.params.id2) {
     //we throw a mistake if there are no params.
     return res.status(400).send({ error: 'Bad params! Need 2 ids.' })

@@ -1,13 +1,5 @@
 import { getActorName, getActorRevenue, getConnection } from './api'
 
-const MDB_API_KEY = '6931de2906a99776822e6352bddb2475'
-const mdb = require('moviedb')(MDB_API_KEY)
-
-let face_url = ''
-mdb.configuration({}, (err, res) => {
-  face_url = res.images.base_url + res.images.logo_sizes[0]
-})
-
 const express = require('express')
 const app = express()
 
@@ -30,3 +22,4 @@ app.get('/connection/:id1/:id2', getConnection)
 
 //now we start the server. Yei.
 app.listen(process.env['PORT'] || 3000)
+console.log(`server started at port ${process.env['PORT'] || 3000}`)

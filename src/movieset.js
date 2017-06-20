@@ -3,20 +3,8 @@ import find from 'lodash/find'
 import isNull from 'lodash/isNull'
 import intersectionBy from 'lodash/intersectionBy'
 import isUndefined from 'lodash/isUndefined'
-import mdbAPI from 'moviedb'
 
-const mdb = mdbAPI(process.env['MDB_API_KEY'])
-
-let poster_url = ''
-let poster_url_original = ''
-mdb.configuration({}, (err, res) => {
-  console.log(
-    'Configuration from Movie DB loaded with poster sizes of ' +
-      res.images.logo_sizes[4]
-  )
-  poster_url = res.images.base_url + res.images.logo_sizes[4]
-  poster_url_original = res.images.base_url + res.images.logo_sizes[5]
-})
+const POSTERS_URL = 'http://image.tmdb.org/t/p/w500'
 
 export const createResults = (movies, useBigPosters = true) => {
   let arr = null
@@ -29,19 +17,18 @@ export const createResults = (movies, useBigPosters = true) => {
     }
   }
   let answer = '' //we just use this variable to print a friendly log.
-  let responseJson = {} //the final response.
+  const responseJson = {}
   responseJson.moviesTheyWorkedIn = []
   each(arr, movie => {
     const info = {}
-    answer += 'Movie: ' + movie.title + ' (' + movie.release_date + ')' //we need only the year when it was released.
+    answer += 'Movie: ' + movie.title + ' (' + movie.release_date + ')'
     info.movie = movie.title
     if (movie.poster_path) {
-      info.poster =
-        (useBigPosters ? poster_url_original : poster_url) + movie.poster_path
+      info.poster = POSTERS_URL + movie.poster_path
     }
     info.date = movie.release_date
     info.people = []
-    for (let actor in movies) {
+    for (const actor in movies) {
       const actorJob = find(movies[actor], { title: movie.title })
       if (isUndefined(actorJob.job)) {
         //if he was an actor.
