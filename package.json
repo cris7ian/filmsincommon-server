@@ -11,15 +11,12 @@
   },
   "dependencies": {
     "async": "0.2.9",
-    "dotenv": "^4.0.0",
     "express": "3.x",
     "lodash": "^4.17.4",
     "moviedb": "~0.1.0",
-    "underscore": "~1.5.2",
     "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "underscore.string": "~2.3.3"
+    "babel-preset-stage-2": "^6.24.1"
   },
   "scripts": {
     "precommit": "lint-staged",
