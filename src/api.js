@@ -3,7 +3,7 @@ import reduce from 'lodash/reduce'
 import isEmpty from 'lodash/isEmpty'
 import sortBy from 'lodash/sortBy'
 import uniqBy from 'lodash/uniqBy'
-import { createResults } from './movieset'
+import { createResults } from './helpers'
 import async from 'async'
 import mdbAPI from 'moviedb'
 
@@ -18,6 +18,7 @@ export const getActorName = (req, res) => {
     res.status(400).send({ error: 'Bad params!' })
     return
   }
+  console.log(`query for name "${name}"`)
   //we use 'ngram' because we'll want to use it as an autocomplete method (see API).
   mdb.searchPerson(
     { query: name, search_type: 'ngram', include_adult: true },
@@ -51,6 +52,7 @@ export const getActorRevenue = (req, res) => {
     //we throw an error if there are no params.
     return res.status(500).send({ error: 'Need an id.' })
   }
+  console.log(`query for revenue of ${id}`)
   try {
     const getRevenue = (credit, callback) => {
       mdb.movieInfo({ id: credit.id }, (err, result) => {
@@ -96,6 +98,7 @@ export const getConnection = (req, res) => {
     return res.status(400).send({ error: 'Bad params! Need 2 ids.' })
   }
   const { id1, id2 } = req.params
+  console.log(`query for ${id1} and ${id2}`)
   getCredits(id1)
     .then(moviesActor1 => {
       movies[id1] = moviesActor1
@@ -107,7 +110,7 @@ export const getConnection = (req, res) => {
     })
     .then(movies => createResults(movies))
     .then(response => res.json(response))
-    .catch(error =>
+    .catch(() =>
       res.status(500).send({
         error: "Can't get information for the connection. Server error."
       })

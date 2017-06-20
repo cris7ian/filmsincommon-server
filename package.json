@@ -20,7 +20,7 @@
   },
   "scripts": {
     "precommit": "lint-staged",
-    "start": "nodemon src/index.js --exec babel-node",
+    "start": "nodemon src/index.js --exec \"eslint src/** && babel-node\"",
     "build": "babel src -d dist",
     "serve": "node dist/index.js",
     "postinstall": "npm run build"
