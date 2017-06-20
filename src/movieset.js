@@ -6,7 +6,7 @@ import isUndefined from 'lodash/isUndefined'
 
 const POSTERS_URL = 'http://image.tmdb.org/t/p/w500'
 
-export const createResults = (movies, useBigPosters = true) => {
+export const createResults = movies => {
   let arr = null
   for (let actor in movies) {
     if (isNull(arr)) {
