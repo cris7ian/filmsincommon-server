@@ -11,7 +11,7 @@ const mdb = mdbAPI(process.env['MDB_API_KEY'])
 
 const PROFILE_PICS_URL = 'http://image.tmdb.org/t/p/w45'
 
-export const getActorName = (req, res) => {
+const getActorName = (req, res) => {
   const name = req.params.name
   if (!name) {
     //we throw an error if there are no params.
@@ -46,7 +46,7 @@ export const getActorName = (req, res) => {
   )
 }
 
-export const getActorRevenue = (req, res) => {
+const getActorRevenue = (req, res) => {
   const id = req.params.id
   if (!id) {
     //we throw an error if there are no params.
@@ -91,7 +91,7 @@ const getCredits = id =>
     })
   })
 
-export const getConnection = (req, res) => {
+const getConnection = (req, res) => {
   const movies = {}
   if (!req.params.id1 || !req.params.id2) {
     //we throw a mistake if there are no params.
@@ -116,3 +116,5 @@ export const getConnection = (req, res) => {
       })
     )
 }
+
+export { getActorName, getConnection, getActorRevenue }
