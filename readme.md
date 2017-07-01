@@ -4,7 +4,7 @@
 - `npm start` for development.
 - `npm build && npm serve` for production
 
-Remember to set your `MDB_API_KEY` in your environment variables.
+Remember to set your `MDB_API_KEY` in your environment variables and turn on [Redis](https://redis.io/).
 
 
 ## todo
