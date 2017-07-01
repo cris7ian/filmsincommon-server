@@ -11,6 +11,6 @@ Remember to set your `MDB_API_KEY` in your environment variables.
 
 - [x] use promises / refactor.
 - [x] change status errors.
+- [x] add cache.
 - [ ] write tests.
 - [ ] use timeouts to avoid api limits.
-- [ ] add cache.
