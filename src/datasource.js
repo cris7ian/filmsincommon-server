@@ -15,6 +15,7 @@ const searchInMBD = (options, method) =>
   new Promise((resolve, reject) =>
     mdb[method](options, (err, info) => {
       if (err) {
+        console.log(err)
         reject()
       } else {
         client.set(
@@ -28,13 +29,13 @@ const searchInMBD = (options, method) =>
     })
   )
 
-export const search = (options, method) => {
-  return client
+export const inCache = (method, id) =>
+  client.getAsync(`${method}:${id}`).then(result => !!result).catch(() => false)
+
+export const search = (options, method) =>
+  client
     .getAsync(`${method}:${options.query || options.id}`)
     .then(
       result => (result ? JSON.parse(result) : searchInMBD(options, method))
     )
-    .catch(error => {
-      console.log(`error!: ${error}`)
-    })
-}
+    .catch(error => console.log(`error!: ${error}`))

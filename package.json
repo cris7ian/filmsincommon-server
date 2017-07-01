@@ -1,7 +1,7 @@
 {
   "name": "filmsincommon",
   "version": "1.0.0",
-  "description": "A service that matches the works of two different movie people.",
+  "description": "A service for the film industry.",
   "main": "index.js",
   "lint-staged": {
     "*.js": [
@@ -23,7 +23,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "test": "jest --watchAll --coverage",
-    "start": "nodemon src/index.js --exec \"eslint src/** && babel-node\"",
+    "start": "nodemon src/index.js --exec \"babel-node\"",
     "build": "babel src -d dist --ignore spec.js,test.js",
     "serve": "node dist/index.js",
     "postinstall": "npm run build"
@@ -38,7 +38,6 @@
   "license": "BSD",
   "gitHead": "06518704dd02c7974c65015f46ba17f2b29c910d",
   "devDependencies": {
-    "eslint": "^4.0.0",
     "husky": "^0.13.3",
     "jest": "^20.0.4",
     "lint-staged": "^3.4.1",
