@@ -1,7 +1,9 @@
 import { getActorName, getActorRevenue, getConnection } from './api'
+import timeout from 'connect-timeout'
 import express from 'express'
 
 express()
+  .use(timeout(120000))
   .use((req, res, next) => {
     res
       .header('Access-Control-Allow-Origin', '*')
