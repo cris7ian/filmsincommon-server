@@ -7,7 +7,7 @@ bluebird.promisifyAll(redis.Multi.prototype)
 
 const client = redis.createClient(process.env.REDIS_URL)
 
-const mdb = mdbAPI(process.env['MDB_API_KEY'])
+const mdb = mdbAPI(process.env.MDB_API_KEY)
 
 const TWO_DAYS = 60 * 60 * 24 * 2
 
